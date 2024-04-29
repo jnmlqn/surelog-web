@@ -1,0 +1,169 @@
+<app-navbar [title]="'PROJECTS'" [icon]="'trending-up-outline'" [loader]="loader">
+    <div content>
+        <button class="surelog-btn secondary-bg shadow border-0 right" (click)="save()">
+            <ion-icon name="save-outline"></ion-icon>
+            &nbsp;
+            <label>Save Project</label>
+        </button>
+        {{id == undefined || id == null ? 'Create' : 'Edit'}} Project
+        <br><br>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-12">
+                <label class="text-muted">Department</label>
+                <ion-select placeholder="Select Department" class="form-control form-control-sm" [(ngModel)]="data.department_id" (ionChange)="filterUser()">
+                    <ion-select-option value="{{department.id}}" *ngFor="let department of departments">
+                        {{department.name}}
+                    </ion-select-option>
+                </ion-select>
+                <br>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-12">
+                <label class="text-muted">Name</label>
+                <input type="name" class="form-control form-control-sm" [(ngModel)]="data.name">
+                <br>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-12">
+                <label class="text-muted">Description</label>
+                <textarea class="form-control form-control-sm" [(ngModel)]="data.description"></textarea>
+                <br>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-12">
+                <label class="text-muted">Location</label>
+                <textarea class="form-control form-control-sm" [(ngModel)]="data.location"></textarea>
+                <br>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-12">
+                <label class="text-muted">Start Date</label>
+                <input type="date" class="form-control form-control-sm" [(ngModel)]="data.start_date">
+                <br>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-12">
+                <label class="text-muted">End Date</label>
+                <input type="date" class="form-control form-control-sm" [(ngModel)]="data.end_date">
+                <br>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-12">
+                <label class="text-muted">Offset</label>
+                <input type="number" step="any" class="form-control form-control-sm" [(ngModel)]="data.offset">
+                <br>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <label class="text-muted">Project Schedules</label>
+                <table class="table table-hover table-borderless data-table">
+                    <thead>
+                        <tr>
+                            <th width="33.33%" class="text-muted">Time In</th>
+                            <th width="33.33%" class="text-muted">Time Out</th>
+                            <th width="33.33%" class="text-muted">Night Shift?</th>
+                            <th>
+                                <div class="center">
+                                    <button class="surelog-btn success-bg shadow border-0" (click)="addRow()">
+                                        <ion-icon name="add-outline"></ion-icon>
+                                    </button>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let project_schedule of data.project_schedules" class="bg-light data-row">
+                            <th>
+                                <input type="time" class="form-control form-control-sm" style="font-size: 1em !important;" [(ngModel)]="project_schedule.time_in">
+                            </th>
+                            <th>
+                                <input type="time" class="form-control form-control-sm" style="font-size: 1em !important;" [(ngModel)]="project_schedule.time_out">
+                            </th>
+                            <th>
+                                <label class="switch">
+                                    <input type="checkbox" [(ngModel)]="project_schedule.is_night_shift">
+                                    <span class="slider round"></span>
+                                </label>
+                            </th>
+                            <th>
+                                <div class="center">
+                                    <span class="text-danger pointer" title="Delete" style="font-size: 1.5em;" (click)="deleteRow(project_schedule)">
+                                        <ion-icon name="trash-outline"></ion-icon>
+                                    </span>
+                                </div>
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 col-12">
+                <label class="text-muted">Employees</label>
+                <div class="light-bg rounded border" style="height: 250px; overflow-y: auto;">
+                    <div class="p-2">
+                        <input type="text" class="form-control form-control-sm" placeholder="Search Employee" (input)="filterUser()" [(ngModel)]="employee_keyword">
+                    </div>
+                    <table class="table table-hover table-borderless">
+                        <tr *ngFor="let user of users_filtered" class="bg-light data-row">
+                            <th class="p-2 border-bottom">
+                                <span>{{user.name}}</span>
+                                <br>
+                                <a class="btn btn-link" style="font-size: .95em;" (click)="addUser('member', user)">Add as Member</a>
+                                &nbsp;&nbsp;&nbsp;
+                                <a class="btn btn-link" style="font-size: .95em;" (click)="addUser('authority', user)">Add as Authority</a>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+                <br>
+            </div>
+
+            <div class="col-md-4 col-12">
+                <label class="text-muted">Project Members</label>
+                <div class="light-bg rounded border" style="height: 250px; overflow-y: auto;">
+                    <table class="table table-hover table-borderless">
+                        <tr *ngFor="let user of data.project_members" class="bg-light data-row">
+                            <th class="p-2 border-bottom">
+                                <span>
+                                    {{employeeName(user)}}
+                                    <span class="pointer text-danger right" style="font-size: 1.3em;" (click)="removeUser('member', user)">
+                                        <ion-icon name="close-outline"></ion-icon>
+                                    </span>
+                                </span>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+                <br>
+            </div>
+
+            <div class="col-md-4 col-12">
+                <label class="text-muted">Project Authorities</label>
+                <div class="light-bg rounded border" style="height: 250px; overflow-y: auto;">
+                    <table class="table table-hover table-borderless">
+                        <tr *ngFor="let user of data.project_authorities" class="bg-light data-row">
+                            <th class="p-2 border-bottom">
+                                <span>
+                                    {{employeeName(user)}}
+                                    <span class="pointer text-danger right" style="font-size: 1.3em;" (click)="removeUser('authority', user)">
+                                        <ion-icon name="close-outline"></ion-icon>
+                                    </span>
+                                </span>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+</app-navbar>

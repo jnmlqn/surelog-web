@@ -1,0 +1,237 @@
+<app-navbar [title]="'ACCOUNTING'" [loader]="loader">
+    <div content>
+        Payroll
+        <br><br>
+        <div class="row">
+            <div class="col-md-3 mt-2">
+                <label>Date From</label>
+                <input type="date" class="form-control form-control-sm" [(ngModel)]="dateFrom" placeholder="Search">
+                <br>
+                <label>Date To</label>
+                <input type="date" class="form-control form-control-sm" [(ngModel)]="dateTo" placeholder="Search">
+            </div>
+            <div class="col-md-3 mt-2">
+                <label>Filter by Department</label>
+                <ion-select placeholder="Select Department" class="form-control form-control-sm" [(ngModel)]="department_id">
+                    <ion-select-option value="">All Departments</ion-select-option>
+                    <ion-select-option value="{{department.id}}" *ngFor="let department of departments">
+                        {{department.name}}
+                    </ion-select-option>
+                </ion-select>
+                <br>
+                <label>Group by Project</label>
+                <input type="text" class="form-control form-control-sm bg-light" [(ngModel)]="project.name" readonly placeholder="Click to search" (click)="searchProject()" style="cursor: pointer;">
+            </div>
+            <div class="col-md-3 mt-2">
+                <label>Computation Type</label>
+                <div class="row mt-3">
+                    <div class="form-check col">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="1_cutoff" [(ngModel)]="computationType">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            1 Cutoff
+                        </label>
+                    </div>
+                    <div class="form-check col">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked value="2_cutoffs" [(ngModel)]="computationType">
+                        <label class="form-check-label" for="flexRadioDefault2">
+                            2 Cutoff
+                        </label>
+                    </div>
+                    <div class="form-check col">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" value="daily" [(ngModel)]="computationType">
+                        <label class="form-check-label" for="flexRadioDefault3">
+                            Daily Pay
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mt-4">
+                <button class="surelog-btn secondary-bg shadow border-0 right" (click)="compute()">
+                    <ion-icon name="calculator-outline"></ion-icon>
+                    &nbsp;
+                    <label>Compute</label>
+                </button>
+            </div>
+        </div>
+
+        <br><br>
+        
+        <div style="overflow: auto;">
+            <table class="table table-hover table-borderless data-table">
+                <thead>
+                    <tr>
+                        <th class="text-muted center">
+                            <span class="pointer sort" (click)="sortData('employee_id')">
+                                Employee ID
+                                <ion-icon name="chevron-{{sorting == 'desc' && sort_by == 'employee_id' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class="text-muted center">
+                            <span class="pointer sort" (click)="sortData('first_name')">
+                                Employee Name
+                                <ion-icon name="chevron-{{sorting == 'desc' && sort_by == 'first_name' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class="text-muted center">
+                            <span class="pointer sort" (click)="sortData('position')">
+                                Position
+                                <ion-icon name="chevron-{{sorting == 'desc' && sort_by == 'position' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class="text-muted center">
+                            <span class="pointer sort" (click)="sortData('rate')">
+                                Rate
+                                <ion-icon name="chevron-{{sorting == 'desc' && sort_by == 'rate' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class="text-muted center">
+                            <span class="pointer sort" (click)="sortData('taxable_allowance')">
+                                Taxable Allowance
+                                <ion-icon name="chevron-{{sorting == 'desc' && sort_by == 'taxable_allowance' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class="text-muted center">
+                            <span class="pointer sort" (click)="sortData('department')">
+                                Department
+                                <ion-icon name="chevron-{{sorting == 'desc' && sort_by == 'department' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class="text-muted center">
+                            Employment Type
+                        </th>
+                        <th class="text-muted center">
+                            Daily Rate
+                        </th>
+                        <th class="text-muted center">
+                            Overtime Pay
+                        </th>
+                        <th class="text-muted center">
+                            Total Absences<br>in minutes<br>
+                            (Late, Absent, Undertime)
+                        </th>
+                        <th class="text-muted center">
+                            Net of<br>Absences
+                        </th>
+                        <th class="text-muted center">
+                            Backpay
+                        </th>
+                        <th class="text-muted center">
+                            Previous<br>Overtime Pay
+                        </th>
+                        <th class="text-muted center">
+                            Grosspay
+                        </th>
+                        <th class="text-muted center">
+                            <input type="checkbox" class="form-check-input" (change)="checkAll($event, 'sss')" [checked]="isCheckedAll('sss')">
+                            SSS
+                        </th>
+                        <th class="text-muted center">
+                            <input type="checkbox" class="form-check-input" (change)="checkAll($event, 'pagibig')" [checked]="isCheckedAll('pagibig')">
+                            Pag-ibig
+                        </th>
+                        <th class="text-muted center">
+                            <input type="checkbox" class="form-check-input" (change)="checkAll($event, 'philhealth')" [checked]="isCheckedAll('philhealth')">
+                            Philhealth
+                        </th>
+                        <th class="text-muted center">
+                            SSS Loan
+                        </th>
+                        <th class="text-muted center">
+                            Pag-ibig Loan
+                        </th>
+                        <th class="text-muted center">
+                            Tax
+                        </th>
+                        <th class="text-muted center">
+                            Out of office<br>time (mins)
+                        </th>
+                        <th class="text-muted center">
+                            Cash Advance
+                        </th>
+                        <th class="text-muted center">
+                            Total Deductions
+                        </th>
+                        <th class="text-muted center">
+                            Netpay
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let attendance of attendance.data" class="bg-light data-row">
+                        <th class="center">{{attendance.employee_id ? attendance.employee_id : 'N/A'}}</th>
+                        <th class="center">
+                            <a href="/attendance/{{attendance.id}}/{{dateFrom}}/{{dateTo}}/{{computationType}}" target="_blank">{{attendance.name}}</a>
+                        </th>
+                        <th class="center">{{attendance.position ? attendance.position : 'N/A'}}</th>
+                        <th class="center">₱ {{attendance.rate}}</th>
+                        <th class="center">₱ {{attendance.taxable_allowance ? attendance.taxable_allowance : 0}}</th>
+                        <th class="center">{{attendance.department ? attendance.department : 'N/A'}}</th>
+                        <th class="center">{{attendance.employment_type_id.name}}</th>
+                        <th class="center">₱ {{attendance.daily_rate}}</th>
+                        <th class="center">₱ {{attendance.ot_pay}}</th>
+                        <th class="center">{{attendance.total_absences}}</th>
+                        <th class="center">₱ {{attendance.net_absences}}</th>
+                        <th class="center">
+                            <input type="number" step="any" class="form-control inputs" [(ngModel)]="attendance.backpay" (change)="updateAttendance(attendance)">
+                        </th>
+                        <th class="center">
+                            <input type="number" step="any" class="form-control inputs" [(ngModel)]="attendance.pot_pay" (change)="updateAttendance(attendance)">
+                        </th>
+                        <th class="center">₱ {{attendance.grosspay}}</th>
+                        <th class="center">
+                            <table>
+                                <tr>
+                                    <td class="px-2">
+                                        <input type="checkbox" class="form-check-input" [(ngModel)]="attendance.sss_check" (change)="updateAttendance(attendance)">
+                                    </td>
+                                    <td>
+                                        <input type="number" step="any" class="form-control inputs" [(ngModel)]="attendance.sss_deduction" (change)="updateAttendance(attendance)">
+                                    </td>
+                                </tr>
+                            </table>
+                        </th>
+                        <th class="center">
+                            <table>
+                                <tr>
+                                    <td class="px-2">
+                                        <input type="checkbox" class="form-check-input" [(ngModel)]="attendance.pagibig_check" (change)="updateAttendance(attendance)">
+                                    </td>
+                                    <td>
+                                        <input type="number" step="any" class="form-control inputs" [(ngModel)]="attendance.pagibig_deduction" (change)="updateAttendance(attendance)">
+                                    </td>
+                                </tr>
+                            </table>
+                        </th>
+                        <th class="center">
+                            <table>
+                                <tr>
+                                    <td class="px-2">
+                                        <input type="checkbox" class="form-check-input" [(ngModel)]="attendance.philhealth_check" (change)="updateAttendance(attendance)">
+                                    </td>
+                                    <td>
+                                        <input type="number" step="any" class="form-control inputs" [(ngModel)]="attendance.philhealth_deduction" (change)="updateAttendance(attendance)">
+                                    </td>
+                                </tr>
+                            </table>
+                        </th>
+                        <th class="center">
+                            <input type="number" step="any" class="form-control inputs" [(ngModel)]="attendance.sss_loan" (change)="updateAttendance(attendance)">
+                        </th>
+                        <th class="center">
+                            <input type="number" step="any" class="form-control inputs" [(ngModel)]="attendance.pagibig_loan" (change)="updateAttendance(attendance)">
+                        </th>
+                        <th class="center">{{attendance.tax}}</th>
+                        <th class="center">
+                            <input type="number" step="any" class="form-control inputs" [(ngModel)]="attendance.out_of_office" (change)="updateAttendance(attendance)">
+                        </th>
+                        <th class="center">
+                            <input type="number" step="any" class="form-control inputs" [(ngModel)]="attendance.cash_advance" (change)="updateAttendance(attendance)">
+                        </th>
+                        <th class="center">₱ {{attendance.total_deductions}}</th>
+                        <th class="center">₱ {{attendance.net_pay}}</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</app-navbar>

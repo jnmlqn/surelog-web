@@ -1,0 +1,44 @@
+<app-navbar [title]="'LOCATE PROJECT AUTHORITIES'" [loader]="loader">
+    <div content>
+        Browse Project Authorities
+        <br><br>
+        <div style="overflow: auto">
+            <table class="table table-hover table-borderless data-table">
+                <thead>
+                    <tr>
+                        <th class="text-muted">
+                            Project Authority Name
+                        </th>
+                        <th class="text-muted">
+                            Last detected location
+                        </th>
+                        <th class="text-muted">
+                            Last updated at
+                        </th>
+                        <th class="center text-muted">
+                            Locate
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let authority of authorities" class="bg-light data-row">
+                        <th>{{authority.user_id.name}}</th>
+                        <th>
+                            <a href="{{authority.location}}" *ngIf="authority.location !== null" target="_blank">Click to view location</a>
+                            <span *ngIf="authority.location == null">N/A</span>
+                        </th>
+                        <th>
+                            <span *ngIf="authority.created_at !== null">{{authority.created_at | date: 'medium'}}</span>
+                            <span *ngIf="authority.created_at == null">N/A</span>
+                        </th>
+                        <th class="center">
+                            <span class="pointer text-success" title="Locate" style="font-size: 1.5em;" (click)="locate(authority)">
+                                <ion-icon name="locate-outline"></ion-icon>
+                            </span>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</app-navbar>

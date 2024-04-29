@@ -1,0 +1,282 @@
+<app-navbar [title]="'EMPLOYEES'" [icon]="'people-outline'" [loader]="loader">
+    <div content>
+        <button class="surelog-btn secondary-bg shadow border-0 right" (click)="save()">
+            <ion-icon name="save-outline"></ion-icon>
+            &nbsp;
+            <label>Save Employee</label>
+        </button>
+        {{id == undefined || id == null ? 'Create' : 'Edit'}} Employee
+        <br><br>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <span class="nav-link pointer {{active_tab == 1 ? 'light-text secondary-bg' : 'text-muted'}}" (click)="active_tab = 1">
+                    Basic Information
+                </span>
+            </li>
+            <li class="nav-item">
+                <span class="nav-link pointer {{active_tab == 2 ? 'light-text secondary-bg' : 'text-muted'}}" (click)="active_tab = 2">
+                    HR Details
+                </span>
+            </li>
+            <li class="nav-item">
+                <span class="nav-link pointer {{active_tab == 3 ? 'light-text secondary-bg' : 'text-muted'}}" (click)="active_tab = 3">
+                    Office Schedule
+                </span>
+            </li>
+        </ul>
+        <br>
+        
+        <!-- Basic Information Tab -->
+        <div [hidden]="active_tab !== 1">
+            <div class="row mb-3">
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Role</label>
+                    <ion-select placeholder="Select Role" class="form-control form-control-sm" [(ngModel)]="data.role_id">
+                        <ion-select-option value="{{role.id}}" *ngFor="let role of roles">
+                            {{role.name}}
+                        </ion-select-option>
+                    </ion-select>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Email Address</label>
+                    <input type="email" class="form-control form-control-sm" [(ngModel)]="data.email">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Password</label>
+                    <input type="password" class="form-control form-control-sm" placeholder="Enter a new password (optional)" [(ngModel)]="data.password">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">First Name</label>
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="data.first_name">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Middle Name</label>
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="data.middle_name">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Last Name</label>
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="data.last_name">
+                </div>
+                <div class="col-md-2 mb-2">
+                    <label class="text-muted">Extension</label>
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="data.extension">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Birthday</label>
+                    <input type="date" class="form-control form-control-sm" [(ngModel)]="data.birthday">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Mobile Number</label>
+                    <input type="text" class="form-control form-control-sm" placeholder="09xxxxxxxxx" [(ngModel)]="data.mobile">
+                </div>
+                <div class="col-md-5 mb-2">
+                    <label class="text-muted">Address Line</label>
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="data.address">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Select Province</label>
+                    <ion-select placeholder="Select Province" class="form-control form-control-sm" (ionChange)="selectProvice()" [(ngModel)]="data.province_id">
+                        <ion-select-option value="{{province.id}}" *ngFor="let province of address_details ? address_details.provinces : []">
+                            {{province.province}}
+                        </ion-select-option>
+                    </ion-select>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Select City</label>
+                    <ion-select placeholder="Select City" class="form-control form-control-sm" [disabled]="cities.length < 1"  (ionChange)="selectCity()" [(ngModel)]="data.city_id">
+                        <ion-select-option value="{{city.id}}" *ngFor="let city of cities">
+                            {{city.city}}
+                        </ion-select-option>
+                    </ion-select>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Select Zipcode</label>
+                    <ion-select placeholder="Select Zipcode" class="form-control form-control-sm" [disabled]="zipcodes.length < 1" [(ngModel)]="data.zipcode_id">
+                        <ion-select-option value="{{zipcode.id}}" *ngFor="let zipcode of zipcodes">
+                            {{zipcode.area}}
+                        </ion-select-option>
+                    </ion-select>
+                </div>
+            </div>
+        </div>
+
+        <!-- HR Details Tab -->
+        <div [hidden]="active_tab !== 2">
+            <div class="row mb-3">
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Immediate Supervisor/Manager</label>
+                    <input type="text" class="form-control form-control-sm bg-light" [(ngModel)]="data.supervisor_name" readonly placeholder="Click to search" (click)="searchEmployee()" style="cursor: pointer;">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Employee Number</label>
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="data.employee_id">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Position</label>
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="data.position">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Basic Pay</label>
+                    <input type="number" step="any" class="form-control form-control-sm" [(ngModel)]="data.rate">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Tax Identification Number</label>
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="data.tin">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">SSS Number</label>
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="data.sss_number">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Pag-ibig Number</label>
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="data.pagibig_number">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Philhealth Number</label>
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="data.philhealth_number">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Department</label>
+                    <ion-select placeholder="Select Department" class="form-control form-control-sm" [(ngModel)]="data.department_id">
+                        <ion-select-option value="{{department.id}}" *ngFor="let department of departments">
+                            {{department.name}}
+                        </ion-select-option>
+                    </ion-select>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Employment Type</label>
+                    <ion-select placeholder="Select Employment Type" class="form-control form-control-sm" [(ngModel)]="data.employment_type_id">
+                        <ion-select-option value="{{employment_type.id}}" *ngFor="let employment_type of employment_types">
+                            {{employment_type.name}}
+                        </ion-select-option>
+                    </ion-select>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Civil Status</label>
+                    <ion-select placeholder="Select Civil Status" class="form-control form-control-sm" [(ngModel)]="data.civil_status_id">
+                        <ion-select-option value="{{civil_status.id}}" *ngFor="let civil_status of civil_statuses">
+                            {{civil_status.name}}
+                        </ion-select-option>
+                    </ion-select>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="text-muted">Taxable Allowance</label>
+                    <input type="number" step="any" class="form-control form-control-sm" [(ngModel)]="data.taxable_allowance">
+                </div>
+            </div>
+        </div>
+
+        <!-- Office Schedule -->
+        <div [hidden]="active_tab !== 3">
+            <label class="switch">
+                <input type="checkbox" [(ngModel)]="data.office_schedule">
+                <span class="slider round"></span>
+            </label>
+
+            &nbsp;&nbsp;<label class="text-muted">With Office Schedule</label>
+
+            <br><br>
+
+            <div *ngIf="data.office_schedule">
+                <div class="row mb-3">
+                    <div class="col-2 mb-2">
+                        <label class="text-muted">Day</label>
+                    </div>
+                    <div class="col-3 mb-2">
+                        <label class="text-muted">Time In</label>
+                    </div>
+                    <div class="col-3 mb-2">
+                        <label class="text-muted">Time Out</label>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-2 mb-2">
+                        <label class="text-muted">Monday</label>
+                    </div>
+                    <div class="col-3 mb-2">
+                        <input type="time" class="form-control form-control-sm" [(ngModel)]="data.monday_in">
+                    </div>
+                    <div class="col-3 mb-2">
+                        <input type="time" class="form-control form-control-sm" [(ngModel)]="data.monday_out">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-2 mb-2">
+                        <label class="text-muted">Tuesday</label>
+                    </div>
+                    <div class="col-3 mb-2">
+                        <input type="time" class="form-control form-control-sm" [(ngModel)]="data.tuesday_in">
+                    </div>
+                    <div class="col-3 mb-2">
+                        <input type="time" class="form-control form-control-sm" [(ngModel)]="data.tuesday_out">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-2 mb-2">
+                        <label class="text-muted">Wednesday</label>
+                    </div>
+                    <div class="col-3 mb-2">
+                        <input type="time" class="form-control form-control-sm" [(ngModel)]="data.wednesday_in">
+                    </div>
+                    <div class="col-3 mb-2">
+                        <input type="time" class="form-control form-control-sm" [(ngModel)]="data.wednesday_out">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-2 mb-2">
+                        <label class="text-muted">Thursday</label>
+                    </div>
+                    <div class="col-3 mb-2">
+                        <input type="time" class="form-control form-control-sm" [(ngModel)]="data.thursday_in">
+                    </div>
+                    <div class="col-3 mb-2">
+                        <input type="time" class="form-control form-control-sm" [(ngModel)]="data.thursday_out">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-2 mb-2">
+                        <label class="text-muted">Friday</label>
+                    </div>
+                    <div class="col-3 mb-2">
+                        <input type="time" class="form-control form-control-sm" [(ngModel)]="data.friday_in">
+                    </div>
+                    <div class="col-3 mb-2">
+                        <input type="time" class="form-control form-control-sm" [(ngModel)]="data.friday_out">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-2 mb-2">
+                        <label class="text-muted">Saturday</label>
+                    </div>
+                    <div class="col-3 mb-2">
+                        <input type="time" class="form-control form-control-sm" [(ngModel)]="data.saturday_in">
+                    </div>
+                    <div class="col-3 mb-2">
+                        <input type="time" class="form-control form-control-sm" [(ngModel)]="data.saturday_out">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-2 mb-2">
+                        <label class="text-muted">Sunday</label>
+                    </div>
+                    <div class="col-3 mb-2">
+                        <input type="time" class="form-control form-control-sm" [(ngModel)]="data.sunday_in">
+                    </div>
+                    <div class="col-3 mb-2">
+                        <input type="time" class="form-control form-control-sm" [(ngModel)]="data.sunday_out">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-navbar>

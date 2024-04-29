@@ -1,0 +1,126 @@
+<app-navbar [title]="'PROJECTS'" [icon]="'trending-up-outline'" [loader]="loader">
+    <div content>
+        Browse Projects
+        <br><br>
+        <div class="row">
+            <div class="col-md-3 mt-1">
+                <label>Search</label>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="keyword" placeholder="Search" (input)="startSearch()">
+            </div>
+            <div class="col-md-3 mt-1">
+                <label>Filter by Department</label>
+                <ion-select placeholder="Select Department" class="form-control form-control-sm" [(ngModel)]="department_id" (ionChange)="startSearch()">
+                    <ion-select-option value="">All Departments</ion-select-option>
+                    <ion-select-option value="{{department.id}}" *ngFor="let department of departments">
+                        {{department.name}}
+                    </ion-select-option>
+                </ion-select>
+            </div>
+            <div class="col-md-6 mt-1">
+                <br>
+                <button class="surelog-btn secondary-bg shadow border-0 right" routerLink="/projects/create">
+                    <ion-icon name="add-outline"></ion-icon>
+                    &nbsp;
+                    <label>New Project</label>
+                </button>
+            </div>
+        </div>
+        <br><br>
+        <div style="overflow: auto;">
+            <table class="table table-hover table-borderless data-table">
+                <thead>
+                    <tr>
+                        <th class="text-muted">
+                            <span class="pointer sort" (click)="sortData('email')">
+                                Project Name
+                                <ion-icon name="chevron-{{sorting == 'desc' && sort_by == 'email' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class="text-muted">
+                            <span class="pointer sort" (click)="sortData('employee_id')">
+                                Project Description
+                                <ion-icon name="chevron-{{sorting == 'desc' && sort_by == 'employee_id' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class=" text-muted">
+                            <span class="pointer sort" (click)="sortData('first_name')">
+                                Location
+                                <ion-icon name="chevron-{{sorting == 'desc' && sort_by == 'first_name' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class=" text-muted">
+                            Start Date<br>End Date
+                        </th>
+                        <th class=" text-muted">
+                            Offset
+                        </th>
+                        <th class=" text-muted">
+                            Department
+                        </th>
+                        <th class=" text-muted">
+                            Status
+                        </th>
+                        <th class=" text-muted">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let project of projects.data.data" class="bg-light data-row">
+                        <th>{{project.name}}</th>
+                        <th>{{project.description ? project.description : 'N/A'}}</th>
+                        <th>{{project.location}}</th>
+                        <th>{{project.start_date | date: 'mediumDate'}}<br>{{project.end_date | date: 'mediumDate'}}</th>
+                        <th>{{project.offset}}</th>
+                        <th>{{project.department_id ? project.department_id.name : 'N/A'}}</th>
+                        <th>{{project.status}}</th>
+                        <th>
+                            <span class="pointer text-success" title="Locations" style="font-size: 1.5em;" routerLink="/projects/{{project.id}}/locate">
+                                <ion-icon name="location-outline"></ion-icon>
+                            </span>
+                            &nbsp;&nbsp;
+                            <span class="pointer text-primary" title="Edit" style="font-size: 1.5em;" routerLink="/projects/{{project.id}}/edit">
+                                <ion-icon name="pencil-outline"></ion-icon>
+                            </span>
+                            &nbsp;&nbsp;
+                            <span class="pointer text-danger" title="Delete" style="font-size: 1.5em;" (click)="deleteProject(project)">
+                                <ion-icon name="trash-outline"></ion-icon>
+                            </span>
+                        </th>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="bg-light data-row">
+                        <th>
+                            <div class="row g-3 align-items-center">
+                                <div class="col-auto">
+                                    <label class="col-form-label">Show</label>
+                                </div>
+                                <div class="col-auto p-0">
+                                    <ion-select placeholder="Results Per Page" class="form-control form-control-sm" [(ngModel)]="limit" (ionChange)="paginate(1)">
+                                        <ion-select-option value="5">5</ion-select-option>
+                                        <ion-select-option value="10">10</ion-select-option>
+                                        <ion-select-option value="15">15</ion-select-option>
+                                        <ion-select-option value="20">20</ion-select-option>
+                                    </ion-select>
+                                </div>
+                                <div class="col-auto">
+                                <span>
+                                    per page
+                                </span>
+                                </div>
+                            </div>
+                        </th>
+                        <th colspan="7" style="vertical-align: middle !important;">
+                            <div class="right" *ngIf="projects.data.last_page > 1">
+                                <button class="btn shadow m-1 paginate-btn {{link.active ? 'active' : ''}}" [disabled]="link.url == null" *ngFor="let link of projects.data.links" (click)="paginate(link.label)">
+                                    {{link.label == 'pagination.previous' ? '<' : (link.label == 'pagination.next' ? '>' : link.label)}}
+                                </button>
+                            </div>
+                        </th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</app-navbar>

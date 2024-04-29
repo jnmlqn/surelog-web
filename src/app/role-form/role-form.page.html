@@ -1,0 +1,71 @@
+<app-navbar [title]="'ROLES'" [icon]="'key-outline'" [loader]="loader">
+    <div content>
+        <button class="surelog-btn secondary-bg shadow border-0 right" (click)="save()">
+            <ion-icon name="save-outline"></ion-icon>
+            &nbsp;
+            <label>Save Role</label>
+        </button>
+        {{id == undefined || id == null ? 'Create' : 'Edit'}} Role
+        <br><br>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-12">
+                <label class="text-muted">Name</label>
+                <input type="name" class="form-control form-control-sm" required [(ngModel)]="data.name">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-12">
+                <label class="text-muted">Select Accessible Module/s</label>
+                <ion-select placeholder="Select Mdoule" multiple="true" class="form-control form-control-sm" (ionChange)="selectModule()" [(ngModel)]="selected_modules">
+                    <ion-select-option value="{{module.id}}" *ngFor="let module of modules">
+                        {{module.name}}
+                    </ion-select-option>
+                </ion-select>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-lg-7 col-md-9 col-12">
+                <table class="table table-hover table-borderless data-table">
+                    <tbody>
+                        <tr *ngFor="let permission of data.permissions" class="bg-light data-row">
+                            <th style="vertical-align: text-top !important;">{{moduleName(permission.module_id)}}</th>
+                            <th>
+                                <label class="switch mb-2">
+                                    <input type="checkbox" [(ngModel)]="permission.permissions.browse">
+                                    <span class="slider round"></span>
+                                </label>&nbsp;&nbsp;&nbsp;&nbsp;Browse <br>
+
+                                <label class="switch mb-2">
+                                    <input type="checkbox" [(ngModel)]="permission.permissions.read">
+                                    <span class="slider round"></span>
+                                </label>&nbsp;&nbsp;&nbsp;&nbsp;Read <br>
+
+                                <label class="switch mb-2">
+                                    <input type="checkbox" [(ngModel)]="permission.permissions.edit">
+                                    <span class="slider round"></span>
+                                </label>&nbsp;&nbsp;&nbsp;&nbsp;Edit <br>
+
+                                <label class="switch mb-2">
+                                    <input type="checkbox" [(ngModel)]="permission.permissions.add">
+                                    <span class="slider round"></span>
+                                </label>&nbsp;&nbsp;&nbsp;&nbsp;Add <br>
+
+                                <label class="switch mb-2">
+                                    <input type="checkbox" [(ngModel)]="permission.permissions.delete">
+                                    <span class="slider round"></span>
+                                </label>&nbsp;&nbsp;&nbsp;&nbsp;Delete <br>
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</app-navbar>

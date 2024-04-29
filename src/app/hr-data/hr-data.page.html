@@ -1,0 +1,504 @@
+<app-navbar [title]="'HR DATA'" [icon]="'briefcase-outline'" [loader]="loader">
+    <div content>
+        <button class="surelog-btn secondary-bg shadow border-0 right" (click)="save()" *ngIf="active_tab !== 8">
+            <ion-icon name="save-outline"></ion-icon>
+            &nbsp;
+            <label>Save Data</label>
+        </button>
+        View & Edit HR Data
+        <br><br>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <span class="nav-link pointer {{active_tab == 1 ? 'light-text secondary-bg' : 'text-muted'}}" (click)="active_tab = 1">
+                    Civil Statuses
+                </span>
+            </li>
+            <li class="nav-item">
+                <span class="nav-link pointer {{active_tab == 2 ? 'light-text secondary-bg' : 'text-muted'}}" (click)="active_tab = 2">
+                    Departments
+                </span>
+            </li>
+            <li class="nav-item">
+                <span class="nav-link pointer {{active_tab == 3 ? 'light-text secondary-bg' : 'text-muted'}}" (click)="active_tab = 3">
+                    Employment Types
+                </span>
+            </li>
+            <li class="nav-item">
+                <span class="nav-link pointer {{active_tab == 4 ? 'light-text secondary-bg' : 'text-muted'}}" (click)="active_tab = 4">
+                    SSS Table
+                </span>
+            </li>
+            <li class="nav-item">
+                <span class="nav-link pointer {{active_tab == 5 ? 'light-text secondary-bg' : 'text-muted'}}" (click)="active_tab = 5">
+                    Pag-ibig Table
+                </span>
+            </li>
+            <li class="nav-item">
+                <span class="nav-link pointer {{active_tab == 6 ? 'light-text secondary-bg' : 'text-muted'}}" (click)="active_tab = 6">
+                    Philhealth Table
+                </span>
+            </li>
+            <li class="nav-item">
+                <span class="nav-link pointer {{active_tab == 7 ? 'light-text secondary-bg' : 'text-muted'}}" (click)="active_tab = 7">
+                    Tax Table
+                </span>
+            </li>
+            <li class="nav-item">
+                <span class="nav-link pointer {{active_tab == 8 ? 'light-text secondary-bg' : 'text-muted'}}" (click)="getHolidays()">
+                    Holidays
+                </span>
+            </li>
+        </ul>
+
+        <!-- Civil Statuses -->
+        <div [hidden]="active_tab !== 1">
+            <div class="row">
+                <div class="col-md-6">
+                    <table class="table table-hover table-borderless data-table">
+                        <thead>
+                            <tr>
+                                <th class="text-muted">Name</th>
+                                <th>
+                                    <div class="center">
+                                        <button class="surelog-btn success-bg shadow border-0" (click)="addRow('civil_status')">
+                                            <ion-icon name="add-outline"></ion-icon>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let civil_status of data.civil_statuses" class="bg-light data-row">
+                                <th>
+                                    <input type="text" class="form-control" style="font-size: 1em !important;" [(ngModel)]="civil_status.name">
+                                </th>
+                                <th>
+                                    <div class="center">
+                                        <span class="text-danger pointer" title="Delete" style="font-size: 1.5em;" (click)="deleteRow('civil_status', civil_status)">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Departments -->
+        <div [hidden]="active_tab !== 2">
+            <div class="row">
+                <div class="col-md-6">
+                    <table class="table table-hover table-borderless data-table">
+                        <thead>
+                            <tr>
+                                <th class="text-muted">Name</th>
+                                <th>
+                                    <div class="center">
+                                        <button class="surelog-btn success-bg shadow border-0" (click)="addRow('department')">
+                                            <ion-icon name="add-outline"></ion-icon>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let department of data.departments" class="bg-light data-row">
+                                <th>
+                                    <input type="text" class="form-control" style="font-size: 1em !important;" [(ngModel)]="department.name">
+                                </th>
+                                <th>
+                                    <div class="center">
+                                        <span class="text-danger pointer" title="Delete" style="font-size: 1.5em;" (click)="deleteRow('department', department)">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employment Types -->
+        <div [hidden]="active_tab !== 3">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover table-borderless data-table">
+                        <thead>
+                            <tr>
+                                <th class="text-muted">Name</th>
+                                <th class="text-muted">Regular OT Rate (%)</th>
+                                <th class="text-muted">Legal Holiday Rate (%)</th>
+                                <th class="text-muted">Legal OT Rate (%)</th>
+                                <th class="text-muted">Night Differential Rate (%)</th>
+                                <th class="text-muted">Rest Day Rate (%)</th>
+                                <th class="text-muted">Rest Day OT Rate (%)</th>
+                                <th class="text-muted">Special Holiday Rate (%)</th>
+                                <th class="text-muted">Special Holiday OT Rate (%)</th>
+                                <th>
+                                    <div class="center">
+                                        <button class="surelog-btn success-bg shadow border-0" (click)="addRow('employment_type')">
+                                            <ion-icon name="add-outline"></ion-icon>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let employment_type of data.employment_types" class="bg-light data-row">
+                                <th>
+                                    <input type="text" class="form-control" style="font-size: 1em !important;" [(ngModel)]="employment_type.name">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="employment_type.regular_ot_rate">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="employment_type.legal_hol_rate">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="employment_type.legal_hol_ot_rate">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="employment_type.night_diff_rate">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="employment_type.restday_rate">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="employment_type.restday_ot_rate">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="employment_type.special_hol_rate">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="employment_type.special_hol_ot_rate">
+                                </th>
+                                <th>
+                                    <div class="center">
+                                        <span class="text-danger pointer" title="Delete" style="font-size: 1.5em;" (click)="deleteRow('employment_type', employment_type)">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SSS Contributions -->
+        <div [hidden]="active_tab !== 4">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover table-borderless data-table">
+                        <thead>
+                            <tr>
+                                <th class="text-muted">Range From</th>
+                                <th class="text-muted">Range To</th>
+                                <th class="text-muted">Employer Share (₱)</th>
+                                <th class="text-muted">Employee Share (₱)</th>
+                                <th class="text-muted">Total</th>
+                                <th>
+                                    <div class="center">
+                                        <button class="surelog-btn success-bg shadow border-0" (click)="addRow('sss_contribution')">
+                                            <ion-icon name="add-outline"></ion-icon>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let sss_contribution of data.sss_contributions" class="bg-light data-row">
+                                <th>
+                                    <input type="number" class="form-control" style="font-size: 1em !important;" [(ngModel)]="sss_contribution.range_from">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="sss_contribution.range_to">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="sss_contribution.employer">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="sss_contribution.employee">
+                                </th>
+                                <th>
+                                    <input type="number" readonly class="form-control" style="font-size: 1em !important;" value="{{sss_contribution.employer + sss_contribution.employee}}">
+                                </th>
+                                <th>
+                                    <div class="center">
+                                        <span class="text-danger pointer" title="Delete" style="font-size: 1.5em;" (click)="deleteRow('sss_contribution', sss_contribution)">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pag-ibig Contributions -->
+        <div [hidden]="active_tab !== 5">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover table-borderless data-table">
+                        <thead>
+                            <tr>
+                                <th class="text-muted">Range From</th>
+                                <th class="text-muted">Range To</th>
+                                <th class="text-muted">Employer Share (%)</th>
+                                <th class="text-muted">Employee Share (%)</th>
+                                <th>
+                                    <div class="center">
+                                        <button class="surelog-btn success-bg shadow border-0" (click)="addRow('pagibig_contribution')">
+                                            <ion-icon name="add-outline"></ion-icon>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let pagibig_contribution of data.pagibig_contributions" class="bg-light data-row">
+                                <th>
+                                    <input type="number" class="form-control" style="font-size: 1em !important;" [(ngModel)]="pagibig_contribution.range_from">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="pagibig_contribution.range_to">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="pagibig_contribution.employer_rate">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="pagibig_contribution.employee_rate">
+                                </th>
+                                <th>
+                                    <div class="center">
+                                        <span class="text-danger pointer" title="Delete" style="font-size: 1.5em;" (click)="deleteRow('pagibig_contribution', pagibig_contribution)">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Philhealth Contributions -->
+        <div [hidden]="active_tab !== 6">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover table-borderless data-table">
+                        <thead>
+                            <tr>
+                                <th class="text-muted">Range From</th>
+                                <th class="text-muted">Range To</th>
+                                <th class="text-muted">Rate(%)</th>
+                                <th>
+                                    <div class="center">
+                                        <button class="surelog-btn success-bg shadow border-0" (click)="addRow('philhealth_contribution')">
+                                            <ion-icon name="add-outline"></ion-icon>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let philhealth_contribution of data.philhealth_contributions" class="bg-light data-row">
+                                <th>
+                                    <input type="number" class="form-control" style="font-size: 1em !important;" [(ngModel)]="philhealth_contribution.range_from">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="philhealth_contribution.range_to">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="philhealth_contribution.rate">
+                                </th>
+                                <th>
+                                    <div class="center">
+                                        <span class="text-danger pointer" title="Delete" style="font-size: 1.5em;" (click)="deleteRow('philhealth_contribution', philhealth_contribution)">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Taxes Table -->
+        <div [hidden]="active_tab !== 7">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover table-borderless data-table">
+                        <thead>
+                            <tr>
+                                <th class="text-muted">Range From</th>
+                                <th class="text-muted">Range To</th>
+                                <th class="text-muted">Deduction</th>
+                                <th class="text-muted">Percentage</th>
+                                <th>
+                                    <div class="center">
+                                        <button class="surelog-btn success-bg shadow border-0" (click)="addRow('tax')">
+                                            <ion-icon name="add-outline"></ion-icon>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let tax of data.taxes" class="bg-light data-row">
+                                <th>
+                                    <input type="number" class="form-control" style="font-size: 1em !important;" [(ngModel)]="tax.range_from">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="tax.range_to">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="tax.deduction">
+                                </th>
+                                <th>
+                                    <input type="number" step="any" class="form-control" style="font-size: 1em !important;" [(ngModel)]="tax.percentage">
+                                </th>
+                                <th>
+                                    <div class="center">
+                                        <span class="text-danger pointer" title="Delete" style="font-size: 1.5em;" (click)="deleteRow('tax', tax)">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Holidays Table -->
+        <div [hidden]="active_tab !== 8">
+            <br>
+            <div class="row">
+                <div class="col-md-3 mt-1">
+                    <label>Search</label>
+                    <input type="text" class="form-control form-control-sm" [(ngModel)]="keyword" placeholder="Search" (input)="startSearch()">
+                </div>
+                <div class="col-md-3 mt-1">
+                    <label>Filter by Month</label>
+                    <ion-select class="form-control form-control-sm" [(ngModel)]="month" (ionChange)="getHolidays()">
+                        <ion-select-option value="">All</ion-select-option>
+                        <ion-select-option value="{{month.val}}" *ngFor="let month of months">
+                            {{month.label}}
+                        </ion-select-option>
+                    </ion-select>
+                </div>
+                <div class="col-md-3 mt-1">
+                    <label>Filter by Year</label>
+                    <ion-select class="form-control form-control-sm" [(ngModel)]="year" (ionChange)="getHolidays()">
+                        <ion-select-option value="">All</ion-select-option>
+                        <ion-select-option value="{{year}}" *ngFor="let year of years">
+                            {{year}}
+                        </ion-select-option>
+                    </ion-select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover table-borderless data-table">
+                        <thead>
+                            <tr>
+                                <th class="text-muted">
+                                    <span class="pointer sort" (click)="sortData('date')">
+                                        Date
+                                        <ion-icon name="chevron-{{sorting == 'desc' && sortBy == 'date' ? 'down' : 'up'}}-outline"></ion-icon>
+                                    </span>
+                                </th>
+                                <th class="text-muted">
+                                    <span class="pointer sort" (click)="sortData('holiday')">
+                                        Holiday
+                                        <ion-icon name="chevron-{{sorting == 'desc' && sortBy == 'holiday' ? 'down' : 'up'}}-outline"></ion-icon>
+                                    </span>
+                                </th>
+                                <th class="text-muted">
+                                    <span class="pointer sort" (click)="sortData('type')">
+                                        Type
+                                        <ion-icon name="chevron-{{sorting == 'desc' && sortBy == 'type' ? 'down' : 'up'}}-outline"></ion-icon>
+                                    </span>
+                                </th>
+                                <th>
+                                    <div class="center">
+                                        <button class="surelog-btn success-bg shadow border-0" (click)="addRow('holiday')">
+                                            <ion-icon name="add-outline"></ion-icon>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let holiday of holidays.data" class="bg-light data-row">
+                                <th>
+                                    <input type="date" class="form-control" style="font-size: 1em !important;" [(ngModel)]="holiday.date">
+                                </th>
+                                <th>
+                                    <input type="text" class="form-control" style="font-size: 1em !important;" [(ngModel)]="holiday.holiday">
+                                </th>
+                                <th>
+                                    <input type="text" class="form-control" style="font-size: 1em !important;" [(ngModel)]="holiday.type">
+                                </th>
+                                <th>
+                                    <div class="center">
+                                        <span class="text-success pointer" title="Delete" style="font-size: 1.5em;" (click)="saveHoliday(holiday)">
+                                            <ion-icon name="save-outline"></ion-icon>
+                                        </span>
+                                        &nbsp;&nbsp;
+                                        <span class="text-danger pointer" title="Delete" style="font-size: 1.5em;" (click)="deleteHoliday(holiday)">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="bg-light data-row">
+                                <th>
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-auto">
+                                            <label class="col-form-label">Show</label>
+                                        </div>
+                                        <div class="col-auto p-0">
+                                            <ion-select class="form-control form-control-sm" [(ngModel)]="limit" (ionChange)="paginate(1)">
+                                                <ion-select-option value="5">5</ion-select-option>
+                                                <ion-select-option value="10">10</ion-select-option>
+                                                <ion-select-option value="15">15</ion-select-option>
+                                                <ion-select-option value="20">20</ion-select-option>
+                                            </ion-select>
+                                        </div>
+                                        <div class="col-auto">
+                                        <span>
+                                            per page
+                                        </span>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th colspan="3" style="vertical-align: middle !important;">
+                                    <div class="right" *ngIf="holidays.last_page > 1">
+                                        <button class="btn shadow m-1 paginate-btn {{link.active ? 'active' : ''}}" [disabled]="link.url == null" *ngFor="let link of holidays.links" (click)="paginate(link.label)">
+                                            {{link.label == 'pagination.previous' ? '<' : (link.label == 'pagination.next' ? '>' : link.label)}}
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-navbar>

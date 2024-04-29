@@ -1,0 +1,111 @@
+<app-navbar [title]="'APPROVAL'" [loader]="loader">
+    <div content>
+        Overtime Approval
+        <br><br>
+        <div class="row">
+            <div class="col-md-2 mt-2">
+                <label>Date From</label>
+                <input type="date" class="form-control form-control-sm" [(ngModel)]="dateFrom" placeholder="Search">
+            </div>
+            <div class="col-md-2 mt-2">
+                <label>Date To</label>
+                <input type="date" class="form-control form-control-sm" [(ngModel)]="dateTo" placeholder="Search">
+            </div>
+            <div class="col-md-2 mt-2">
+                <label>Filter by Department</label>
+                <ion-select placeholder="Select Department" class="form-control form-control-sm" [(ngModel)]="departmentId">
+                    <ion-select-option value="">All Departments</ion-select-option>
+                    <ion-select-option value="{{department.id}}" *ngFor="let department of departments">
+                        {{department.name}}
+                    </ion-select-option>
+                </ion-select>
+            </div>
+            <div class="col-md-2 mt-2">
+                <label>Filter by Project</label>
+                <input type="text" class="form-control form-control-sm bg-light" [(ngModel)]="project.name" readonly placeholder="Click to search" (click)="searchProject()" style="cursor: pointer;">
+            </div>
+            <div class="col-md-2 mt-2"></div>
+            <div class="col-md-2 mt-4">
+                <button class="surelog-btn secondary-bg shadow border-0 right" (click)="getOtFilings()">
+                    <ion-icon name="calculator-outline"></ion-icon>
+                    &nbsp;
+                    <label>Get OT Filings</label>
+                </button>
+            </div>
+        </div>
+
+        <br><br>
+        
+        <div style="overflow: auto;">
+            <table class="table table-hover table-borderless data-table">
+                <thead>
+                    <tr>
+                        <th class="text-muted">
+                            <span class="pointer sort" (click)="sortData('date')">
+                                Date
+                                <ion-icon name="chevron-{{sorting == 'desc' && sortBy == 'date' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class="text-muted">
+                            Employee Name
+                        </th>
+                        <th class="text-muted">
+                            Project Name
+                        </th>
+                        <th class=" text-muted">
+                            Overtime<br>Time in/<br>Time out
+                        </th>
+                        <th class=" text-muted">
+                            Status
+                        </th>
+                        <th class=" text-muted">
+                            No. of<br>filed hours
+                        </th>
+                        <th class=" text-muted">
+                            Approved<br>Holiday hours
+                        </th>
+                        <th class=" text-muted">
+                            Approved<br>OT hours
+                        </th>
+                        <th class=" text-muted">
+                            Approved<br>Night Hours
+                        </th>
+                        <th class=" text-muted">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let filing of filings.data" class="bg-light data-row">
+                        <th>{{filing.date | date: 'shortDate'}}</th>
+                        <th>{{filing.user_id.name}}</th>
+                        <th>{{filing.project_id ? filing.project_id.name : 'N/A'}}</th>
+                        <th>{{filing.time_in | date: 'short'}}<br>{{filing.time_out | date: 'short'}}</th>
+                        <th>
+                            <span *ngIf="filing.declined_by !== null" class="text-danger">Declined</span>
+                            <span *ngIf="filing.approved_by !== null" class="text-success">Approved</span>
+                            <span *ngIf="filing.approved_by == null && filing.declined_by == null" class="text-primary">Pending</span>
+                        </th>
+                        <th>{{filing.total_mins/60}}</th>
+                        <th>{{filing.approved_holiday_hours}}</th>
+                        <th>{{filing.approved_ot_hours}}</th>
+                        <th>{{filing.approved_night_ot_hours}}</th>
+                        <th>
+                            <span class="pointer text-primary" title="View Official Attendance" style="font-size: 1.5em;" (click)="viewAttendance(filing)">
+                                <ion-icon name="eye-outline"></ion-icon>
+                            </span>
+                            &nbsp;&nbsp;
+                            <span class="pointer text-success" title="Approve" style="font-size: 1.5em;" (click)="actions(1, filing)">
+                                <ion-icon name="checkmark-outline"></ion-icon>
+                            </span>
+                            &nbsp;&nbsp;
+                            <span class="pointer text-danger" title="Reject" style="font-size: 1.5em;" (click)="actions(0, filing)">
+                                <ion-icon name="ban-outline"></ion-icon>
+                            </span>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</app-navbar>

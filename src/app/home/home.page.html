@@ -1,0 +1,90 @@
+<app-navbar [title]="'AUDIT TRAIL'" [icon]="'bar-chart-outline'" [loader]="loader">
+    <div content>
+        Browse Audit Trails
+        <br><br>
+        <div class="row">
+            <div class="col-md-3 mt-1">
+                <label>Search</label>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="keyword" placeholder="Search" (input)="startSearch()">
+            </div>
+            <div class="col-md-3 mt-1">
+                <label>Select Date</label>
+                <input type="date" class="form-control form-control-sm" [(ngModel)]="date" (input)="startSearch()">
+            </div>
+        </div>
+        <br><br>
+        <div style="overflow: auto">
+            <table class="table table-hover table-borderless data-table">
+                <thead>
+                    <tr>
+                        <th class="text-muted">
+                            Employee Name
+                        </th>
+                        <th class="text-muted">
+                            <span class="pointer sort" (click)="sortData('module')">
+                                Module
+                                <ion-icon name="chevron-{{sorting == 'desc' && sortBy == 'module' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class=" text-muted">
+                            <span class="pointer sort" (click)="sortData('message')">
+                                Activity
+                                <ion-icon name="chevron-{{sorting == 'desc' && sortBy == 'message' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class=" text-muted">
+                            <span class="pointer sort" (click)="sortData('created_at')">
+                                Date & Time
+                                <ion-icon name="chevron-{{sorting == 'desc' && sortBy == 'created_at' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let audit_trails of audit_trails.data.data" class="bg-light data-row">
+                        <th width="25%">
+                            {{audit_trails.user_id ? (audit_trails.user_id.first_name + ' ' + audit_trails.user_id.last_name) : 'Deleted User'}}
+                        </th>
+                        <th width="25%">{{audit_trails.module}}</th>
+                        <th width="25%">{{audit_trails.message}}</th>
+                        <th width="25%">
+                            {{audit_trails.created_at | date: 'MMMM dd, yyyy'}}<br>
+                            {{audit_trails.created_at | date: 'hh:mm:ss a'}}
+                        </th>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="bg-light data-row">
+                        <th>
+                            <div class="row g-3 align-items-center">
+                                <div class="col-auto">
+                                    <label class="col-form-label">Show</label>
+                                </div>
+                                <div class="col-auto p-0">
+                                    <ion-select class="form-control form-control-sm" [(ngModel)]="limit" (ionChange)="paginate(1)">
+                                        <ion-select-option value="5">5</ion-select-option>
+                                        <ion-select-option value="10">10</ion-select-option>
+                                        <ion-select-option value="15">15</ion-select-option>
+                                        <ion-select-option value="20">20</ion-select-option>
+                                    </ion-select>
+                                </div>
+                                <div class="col-auto">
+                                <span>
+                                    per page
+                                </span>
+                                </div>
+                            </div>
+                        </th>
+                        <th colspan="3" style="vertical-align: middle !important;">
+                            <div class="right" *ngIf="audit_trails.data.last_page > 1">
+                                <button class="btn shadow m-1 paginate-btn {{link.active ? 'active' : ''}}" [disabled]="link.url == null" *ngFor="let link of audit_trails.data.links" (click)="paginate(link.label)">
+                                    {{link.label == 'pagination.previous' ? '<' : (link.label == 'pagination.next' ? '>' : link.label)}}
+                                </button>
+                            </div>
+                        </th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</app-navbar>

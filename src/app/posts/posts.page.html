@@ -1,0 +1,123 @@
+<app-navbar [title]="'ANNOUNCEMENTS'" [icon]="'trending-up-outline'" [loader]="loader">
+    <div content>
+        Browse Announcements
+        <br><br>
+        <div class="row">
+            <div class="col-md-3 mt-1">
+                <label class="text-muted">Search</label>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="keyword" placeholder="Search" (input)="startSearch()">
+            </div>
+            <div class="col-md-3 mt-1">
+                <label class="text-muted">Date From</label>
+                <input type="date" class="form-control form-control-sm" [(ngModel)]="dateFrom" placeholder="Search" (change)="postsList()">
+                <br>
+                <label class="text-muted">Date To</label>
+                <input type="date" class="form-control form-control-sm" [(ngModel)]="dateTo" placeholder="Search" (change)="postsList()">
+            </div>
+            <div class="col-md-3 mt-1">
+                <label class="text-muted">Filter by Department</label>
+                <ion-select placeholder="Select Department" class="form-control form-control-sm" [(ngModel)]="departmentId" (ionChange)="postsList()">
+                    <ion-select-option value="">All Departments</ion-select-option>
+                    <ion-select-option value="{{department.id}}" *ngFor="let department of departments">
+                        {{department.name}}
+                    </ion-select-option>
+                </ion-select>
+                <br>
+                <label class="text-muted">Filter by Project</label>
+                <input type="text" class="form-control form-control-sm bg-light" [(ngModel)]="project.name" readonly placeholder="Click to search" (click)="searchProject()" style="cursor: pointer;">
+            </div>
+            <div class="col-md-3 mt-1">
+                <br>
+                <button class="surelog-btn secondary-bg shadow border-0 right" routerLink="/posts/create">
+                    <ion-icon name="add-outline"></ion-icon>
+                    &nbsp;
+                    <label>New Announcement</label>
+                </button>
+            </div>
+        </div>
+        <br><br>
+        <div style="overflow: auto;">
+            <table class="table table-hover table-borderless data-table">
+                <thead>
+                    <tr>
+                        <th class="text-muted">
+                            <span class="pointer sort" (click)="sortData('post')">
+                                Content
+                                <ion-icon name="chevron-{{sorting == 'desc' && sortBy == 'post' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class="text-muted">
+                            <span class="pointer sort" (click)="sortData('department_name')">
+                                Department
+                                <ion-icon name="chevron-{{sorting == 'desc' && sortBy == 'department_name' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class=" text-muted">
+                            <span class="pointer sort" (click)="sortData('project_name')">
+                                Project
+                                <ion-icon name="chevron-{{sorting == 'desc' && sortBy == 'project_name' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class=" text-muted">
+                            <span class="pointer sort" (click)="sortData('updated_at')">
+                                Last updated at
+                                <ion-icon name="chevron-{{sorting == 'desc' && sortBy == 'updated_at' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th class=" text-muted">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let post of posts.data.data" class="bg-light data-row">
+                        <th width="30%" style="white-space: pre-wrap;">{{post.post}}</th>
+                        <th>{{post.department_name ? post.department_name : 'N/A'}}</th>
+                        <th>{{post.project_name ? post.project_name : 'N/A'}}</th>
+                        <th>{{post.updated_at | date: 'mediumDate'}}</th>
+                        <th>
+                            <span class="pointer text-primary" title="Edit" style="font-size: 1.5em;" routerLink="/posts/{{post.id}}/edit">
+                                <ion-icon name="pencil-outline"></ion-icon>
+                            </span>
+                            &nbsp;&nbsp;
+                            <span class="pointer text-danger" title="Delete" style="font-size: 1.5em;" (click)="deletePost(post)">
+                                <ion-icon name="trash-outline"></ion-icon>
+                            </span>
+                        </th>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="bg-light data-row">
+                        <th>
+                            <div class="row g-3 align-items-center">
+                                <div class="col-auto">
+                                    <label class="col-form-label">Show</label>
+                                </div>
+                                <div class="col-auto p-0">
+                                    <ion-select placeholder="Results Per Page" class="form-control form-control-sm" [(ngModel)]="limit" (ionChange)="paginate(1)">
+                                        <ion-select-option value="5">5</ion-select-option>
+                                        <ion-select-option value="10">10</ion-select-option>
+                                        <ion-select-option value="15">15</ion-select-option>
+                                        <ion-select-option value="20">20</ion-select-option>
+                                    </ion-select>
+                                </div>
+                                <div class="col-auto">
+                                <span>
+                                    per page
+                                </span>
+                                </div>
+                            </div>
+                        </th>
+                        <th colspan="7" style="vertical-align: middle !important;">
+                            <div class="right" *ngIf="posts.data.last_page > 1">
+                                <button class="btn shadow m-1 paginate-btn {{link.active ? 'active' : ''}}" [disabled]="link.url == null" *ngFor="let link of posts.data.links" (click)="paginate(link.label)">
+                                    {{link.label == 'pagination.previous' ? '<' : (link.label == 'pagination.next' ? '>' : link.label)}}
+                                </button>
+                            </div>
+                        </th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</app-navbar>

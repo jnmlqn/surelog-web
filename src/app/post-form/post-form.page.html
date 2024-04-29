@@ -1,0 +1,36 @@
+<app-navbar [title]="'ANNOUNCEMENTS'" [icon]="'newspaper-outline'" [loader]="loader">
+    <div content>
+        <button class="surelog-btn secondary-bg shadow border-0 right" (click)="save()">
+            <ion-icon name="save-outline"></ion-icon>
+            &nbsp;
+            <label>Save Announcement</label>
+        </button>
+        {{id == undefined || id == null ? 'Create' : 'Edit'}} Announcement
+        <br><br>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-12">
+                <label class="text-muted">Post to specific department only</label>
+                <ion-select placeholder="Select Department" class="form-control form-control-sm" value="{{data.department_id}}" (ionChange)="selectDepartment($event)">
+                    <ion-select-option value="">All Departments</ion-select-option>
+                    <ion-select-option value="{{department.id}}" *ngFor="let department of departments">
+                        {{department.name}}
+                    </ion-select-option>
+                </ion-select>
+                <br>
+            </div>
+            <div class="col-lg-4 col-md-6 col-12">
+                <label class="text-muted">Post to specific project group</label>
+                <input type="text" class="form-control form-control-sm bg-light" [(ngModel)]="project.name" readonly placeholder="Click to search" (click)="searchProject()" style="cursor: pointer;">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 col-md-12 col-12">
+                <label class="text-muted">Write an announcement</label>
+                <textarea class="form-control form-control-sm" [(ngModel)]="data.post" rows="30"></textarea>
+                <br>
+            </div>
+        </div>
+    </div>
+</app-navbar>

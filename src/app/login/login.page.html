@@ -1,0 +1,29 @@
+<div id="main" class="primary-bg">        
+    <div>
+        <form class="row justify-content-center" (submit)="login()" id="first-div">
+            <div class="col-12 col-lg-4 col-md-6 p-5">
+                <div class="center"><img class="logo" src="/assets/imgs/surelog_logo.png"></div>
+
+                <br><br><br><br>
+
+                <input type="email" class="form-control" placeholder="EMAIL" name="email" [(ngModel)]="email" required>
+                
+                <br><br>
+
+                <input type="password" class="form-control" placeholder="PASSWORD" name="password" [(ngModel)]="password" required>
+
+                <br><br>
+
+                <button id="login-btn">
+                    <strong>LOG IN</strong>
+                </button>
+
+                <br>
+
+                <p class="center">
+                    <a routerLink="" class="text-light">Forgot Password?</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>

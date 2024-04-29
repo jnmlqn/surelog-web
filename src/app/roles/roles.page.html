@@ -1,0 +1,119 @@
+<app-navbar [title]="'ROLES'" [icon]="'key-outline'" [loader]="loader">
+    <div content>
+        Browse Roles
+        <br><br>
+        <div class="row">
+            <div class="col-md-3 mt-1">
+                <label>Search</label>
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="keyword" placeholder="Search" (input)="startSearch()">
+            </div>
+            <div class="col-md-9 mt-1">
+                <button class="surelog-btn secondary-bg shadow border-0 right" routerLink="/roles/create">
+                    <ion-icon name="add-outline"></ion-icon>
+                    &nbsp;
+                    <label>New Role</label>
+                </button>
+            </div>
+        </div>
+        <br><br>
+        <div style="overflow: auto">
+            <table class="table table-hover table-borderless data-table">
+                <thead>
+                    <tr>
+                        <th width="25%" class="text-muted">
+                            <span class="pointer sort" (click)="sortData('name')">
+                                Name
+                                <ion-icon name="chevron-{{sorting == 'desc' && sortBy == 'name' ? 'down' : 'up'}}-outline"></ion-icon>
+                            </span>
+                        </th>
+                        <th width="50%" class="text-muted">
+                            Permissions
+                        </th>
+                        <th width="25%" class=" text-muted">
+                            <div class="center">Action</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let role of roles.data.data" class="bg-light data-row">
+                        <th style="vertical-align: text-top !important;">{{role.name}}</th>
+                        <th>
+                            <table class="table border border-primary mt-2">
+                                <tr>
+                                   <th width="20%" class="border-end border-bottom border-primary"><div class="center">Module</div></th>
+                                   <th width="16%" class="border-end border-bottom border-primary"><div class="center">Browse</div></th>
+                                   <th width="16%" class="border-end border-bottom border-primary"><div class="center">Read</div></th>
+                                   <th width="16%" class="border-end border-bottom border-primary"><div class="center">Edit</div></th>
+                                   <th width="16%" class="border-end border-bottom border-primary"><div class="center">Add</div></th>
+                                   <th width="16%" class="border-end border-bottom border-primary"><div class="center">Delete</div></th> 
+                                </tr>
+                                <tr *ngFor="let access of role.access">
+                                    <th class="border-end border-bottom border-primary">
+                                        <div class="center">{{access.module}}</div>
+                                    </th>
+                                    <th class="border-end border-bottom border-primary">
+                                        <div class="center"><b>{{access.permissions.browse ? '✓' : ''}}</b></div>
+                                    </th>
+                                    <th class="border-end border-bottom border-primary">
+                                        <div class="center"><b>{{access.permissions.read ? '✓' : ''}}</b></div>
+                                    </th>
+                                    <th class="border-end border-bottom border-primary">
+                                        <div class="center"><b>{{access.permissions.edit ? '✓' : ''}}</b></div>
+                                    </th>
+                                    <th class="border-end border-bottom border-primary">
+                                        <div class="center"><b>{{access.permissions.add ? '✓' : ''}}</b></div>
+                                    </th>
+                                    <th class="border-end border-bottom border-primary">
+                                        <div class="center"><b>{{access.permissions.delete ? '✓' : ''}}</b></div>
+                                    </th>
+                                </tr>
+                            </table>
+                        </th>
+                        <th style="vertical-align: text-top !important;">
+                            <div class="center">
+                                <span class="pointer text-primary" title="Edit" style="font-size: 1.5em;" routerLink="/roles/{{role.id}}/edit">
+                                    <ion-icon name="pencil-outline"></ion-icon>
+                                </span>
+                                &nbsp;&nbsp;
+                                <span class="pointer text-danger" title="Delete" style="font-size: 1.5em;" (click)="deleteRole(role)">
+                                    <ion-icon name="trash-outline"></ion-icon>
+                                </span>
+                            </div>
+                        </th>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="bg-light data-row">
+                        <th>
+                            <div class="row g-3 align-items-center">
+                                <div class="col-auto">
+                                    <label class="col-form-label">Show</label>
+                                </div>
+                                <div class="col-auto p-0">
+                                    <ion-select placeholder="Results Per Page" class="form-control form-control-sm" [(ngModel)]="limit" (ionChange)="paginate(1)">
+                                        <ion-select-option value="5">5</ion-select-option>
+                                        <ion-select-option value="10">10</ion-select-option>
+                                        <ion-select-option value="15">15</ion-select-option>
+                                        <ion-select-option value="20">20</ion-select-option>
+                                    </ion-select>
+                                </div>
+                                <div class="col-auto">
+                                <span>
+                                    per page
+                                </span>
+                                </div>
+                            </div>
+                        </th>
+                        <th colspan="6" style="vertical-align: middle !important;">
+                            <div class="right" *ngIf="roles.data.last_page > 1">
+                                <button class="btn shadow m-1 paginate-btn {{link.active ? 'active' : ''}}" [disabled]="link.url == null" *ngFor="let link of roles.data.links" (click)="paginate(link.label)">
+                                    {{link.label == 'pagination.previous' ? '<' : (link.label == 'pagination.next' ? '>' : link.label)}}
+                                </button>
+                            </div>
+                        </th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</app-navbar>
